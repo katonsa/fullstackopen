@@ -3,17 +3,20 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import personsService from './services/persons'
+import Notification from './components/Notification'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [filterText, setFilterText] = useState('')
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null); // 'success' | 'error'
 
-  useEffect(() => {
-    personsService
-      .getAll('http://localhost:3001/persons')
+  useEffect(() => { 
+    personService
+      .getAll()
       .then(returnedPersons => {
         setPersons(returnedPersons)
       })
@@ -29,8 +32,16 @@ const App = () => {
       
       if (!confirmUpdatePhoneNumber) return;
 
-      personsService.update(changedPerson.id, changedPerson)
-        .then(returnedPerson => setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson)))
+      personService.update(changedPerson.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+          showMessage(`${changedPerson.name} has been changed`)
+        }).catch(error => {
+          console.log('Error occured when update', error)
+          showMessage(`Information of ${changedPerson.name} has already been removed from server`, 'error')
+          setPersons(persons.filter(person => person.id !== changedPerson.id))
+        })
+
     } else {
       const person = {
         id: persons.length + 1,
@@ -38,8 +49,11 @@ const App = () => {
         number: newPhoneNumber
       }
       
-      personsService.create(person)
-        .then(newPerson => setPersons(persons.concat(newPerson)))
+      personService.create(person)
+        .then(newPerson => {
+          setPersons(persons.concat(newPerson))
+          showMessage(`Added ${newPerson.name}`)
+        })
     }
 
     setNewName('')
@@ -61,9 +75,27 @@ const App = () => {
 
   const handleDeletePerson = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
-      personsService.deleteResource(id)
-        .then(() => setPersons(persons.filter(p => p.id !== id)))
+      personService.deleteResource(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+          showMessage(`${name} has been removed`)
+          setPersons(persons.filter(person => person.id !== id))
+        })
+        .catch(error => {
+          console.log('Error occured when delete', error)
+          showMessage(`Information of ${name} has already been removed from server`, error)
+          setPersons(persons.filter(person => person.id !== id))
+        })
     }
+  }
+
+  const showMessage = (message, type = 'success') => {
+    setMessageType(type)
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+      setMessageType(null)
+    }, 2500)
   }
 
   const filteredPersons = filterText == ''
@@ -73,6 +105,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={messageType}/>
       <Filter filterText={filterText} handleInputFilterTextChange={handleInputFilterTextChange} />
       <h3>Add a new</h3>
       <PersonForm

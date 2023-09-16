@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personsService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,23 +12,36 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personsService
+      .getAll('http://localhost:3001/persons')
+      .then(returnedPersons => {
+        setPersons(returnedPersons)
       })
   }, [])
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const personIndex = persons.findIndex(person => person.name === newName)
 
-    if (persons.findIndex(person => person.name === newName) > -1) {
-      alert(`${newName} is already added to phonebook`)
-      return;
+    if (personIndex > -1) {
+      const changedPerson = {...persons[personIndex], number: newPhoneNumber}
+      const confirmUpdatePhoneNumber = window.confirm(`${changedPerson.name} is already added to phonebook, replace the old number with a new one?`)
+      
+      if (!confirmUpdatePhoneNumber) return;
+
+      personsService.update(changedPerson.id, changedPerson)
+        .then(returnedPerson => setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson)))
+    } else {
+      const person = {
+        id: persons.length + 1,
+        name: newName,
+        number: newPhoneNumber
+      }
+      
+      personsService.create(person)
+        .then(newPerson => setPersons(persons.concat(newPerson)))
     }
 
-    const addNewPerson = persons.concat({ id: persons.length + 1, name: newName, number: newPhoneNumber});
-    setPersons(addNewPerson)
     setNewName('')
     setNewPhoneNumber('')
   }
@@ -44,6 +57,13 @@ const App = () => {
   const handleInputFilterTextChange = (event) => {
     const { value } = event.target
     setFilterText(value)
+  }
+
+  const handleDeletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personsService.deleteResource(id)
+        .then(() => setPersons(persons.filter(p => p.id !== id)))
+    }
   }
 
   const filteredPersons = filterText == ''
@@ -63,7 +83,10 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h3>Numbers</h3>
-      <Persons filteredPersons={filteredPersons}/>
+      <Persons
+        filteredPersons={filteredPersons}
+        handleDeleteClick={handleDeletePerson}
+      />
     </div>
   )
 }

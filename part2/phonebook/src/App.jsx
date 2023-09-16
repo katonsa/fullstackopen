@@ -14,7 +14,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null); // 'success' | 'error'
 
-  useEffect(() => { 
+  useEffect(() => {
     personService
       .getAll()
       .then(returnedPersons => {

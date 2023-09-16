@@ -20,8 +20,7 @@ const Country = ({country}) => {
     if (weather === null) {
       console.log(`weather is null, fetching weather for ${country.name.common}`)
       const [lat, lon] = country.capitalInfo.latlng
-      console.log(lat, lon)
-      const api_key = import.meta.env.VITE_SOME_KEY
+      const api_key = import.meta.env.OPENWEATHERMAP_APIKEY
       axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api_key}`)
         .then(response => setWeather(response.data))
         .catch(console.log)

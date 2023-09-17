@@ -36,10 +36,17 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
           showMessage(`${changedPerson.name} has been changed`)
-        }).catch(error => {
-          console.log('Error occured when update', error)
-          showMessage(`Information of ${changedPerson.name} has already been removed from server`, 'error')
-          setPersons(persons.filter(person => person.id !== changedPerson.id))
+        }).catch(({message, response})=> {
+          if (response) {
+            if (response.data.error) {
+              showMessage(response.data.error, 'error')
+            } else if (response.status === 400) {
+              showMessage(`Information of ${changedPerson.name} has already been removed from server`, 'error')
+              setPersons(persons.filter(person => person.id !== changedPerson.id))
+            }
+          } else {
+            showMessage(message, 'error')
+          }
         })
 
     } else {
@@ -53,6 +60,11 @@ const App = () => {
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
           showMessage(`Added ${newPerson.name}`)
+        })
+        .catch(({message, response}) => {
+          if (response && response.data.error) {
+            showMessage(response.data.error, 'error')
+          }
         })
     }
 

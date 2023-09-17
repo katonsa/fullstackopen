@@ -83,7 +83,7 @@ const App = () => {
         })
         .catch(error => {
           console.log('Error occured when delete', error)
-          showMessage(`Information of ${name} has already been removed from server`, error)
+          showMessage(`Information of ${name} has already been removed from server`, 'error')
           setPersons(persons.filter(person => person.id !== id))
         })
     }

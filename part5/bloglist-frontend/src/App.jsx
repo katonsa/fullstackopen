@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import Toggleable from './components/Toggleable'
+import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
@@ -12,7 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [notification, setNotification] = useState({message: '', type: ''})
+  const [notification, setNotification] = useState({ message: '', type: '' })
 
   const blogFormRef = useRef()
 
@@ -127,11 +127,11 @@ const App = () => {
 
   const createBlogForm = () => {
     return (
-      <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm
           createBlog={addBlog}
         />
-      </Toggleable>
+      </Togglable>
     )
   }
 

@@ -9,7 +9,7 @@ module.exports = {
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
-  settings: { react: { version: '18.2' } },
+  settings: { react: { version: '18.2' }, jest: { version: '29.7.0' } },
   plugins: ['react-refresh', 'jest'],
   rules: {
     'indent': [

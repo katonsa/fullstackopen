@@ -5,22 +5,14 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? '' : 'none' }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   const toggleVisibility = () => {
     setVisible(!visible)
   }
 
   return (
-    <div style={blogStyle}>
+    <div className='blog'>
       {blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='blog-content'>
         <div>
           <a href={blog.url} target='_blank'  rel="noreferrer">{blog.url}</a>
         </div>

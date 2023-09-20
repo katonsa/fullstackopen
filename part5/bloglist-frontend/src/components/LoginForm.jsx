@@ -22,10 +22,15 @@ const LoginForm = ({
         </div>
         <div>
           <label htmlFor="password">password</label>
-          <input type="password" name="password" id="password" value={password} onChange={handlePasswordChange} />
+          <input
+            type="password"
+            name="password"
+            id="password"
+            value={password}
+            onChange={handlePasswordChange} />
         </div>
 
-        <button type="submit">
+        <button id="login-button" type="submit">
           login
         </button>
       </form>

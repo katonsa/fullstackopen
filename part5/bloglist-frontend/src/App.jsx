@@ -161,9 +161,11 @@ const App = () => {
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       </div>
       {createBlogForm()}
-      {sortedBlogsByLikes.map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={updateBlogLike} removeBlog={removeBlog} user={user} />
-      )}
+      <div className='blog-list'>
+        {sortedBlogsByLikes.map(blog =>
+          <Blog key={blog.id} blog={blog} likeBlog={updateBlogLike} removeBlog={removeBlog} user={user} />
+        )}
+      </div>
     </div>
   )
 }

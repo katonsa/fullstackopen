@@ -3,7 +3,16 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state.map(anecdote => anecdote).sort((a, b) => b.votes - a.votes))
+  const anecdotes = useSelector(state => {
+    const query = state.filter.toLowerCase()
+    const baseSorted = state.anecdotes.map(anecdote => anecdote).sort((a, b) => b.votes - a.votes)
+
+    if (query === '') {
+      return baseSorted
+    }
+
+    return baseSorted.filter(anecdote => anecdote.content.toLowerCase().includes(query))
+  })
 
   const vote = (id) => {
     dispatch(voteAnecdote(id))

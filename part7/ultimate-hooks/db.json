@@ -1,0 +1,28 @@
+{
+  "notes": [
+    {
+      "content": "groceries shopping",
+      "id": 1
+    },
+    {
+      "content": "beli telur",
+      "id": 2
+    },
+    {
+      "content": "beli ayam",
+      "id": 3
+    }
+  ],
+  "persons": [
+    {
+      "name": "person 1",
+      "number": "021-123456",
+      "id": 1
+    },
+    {
+      "name": "person 2",
+      "number": "021-123567",
+      "id": 2
+    }
+  ]
+}

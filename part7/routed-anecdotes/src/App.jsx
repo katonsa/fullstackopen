@@ -90,6 +90,7 @@ const CreateNew = (props) => {
     setTimeout(() => {
       props.notify('')
     }, 5000);
+    // resetForm(e)
     navigate('/')
   }
 
@@ -98,7 +99,6 @@ const CreateNew = (props) => {
     resetContent()
     resetAuthor()
     resetInfo()
-    console.log(content.value, author.value, info.value)
   }
 
   return (

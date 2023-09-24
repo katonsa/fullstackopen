@@ -32,7 +32,10 @@ describe('Blog app', function () {
       cy.get('#login-button').click();
 
       cy.contains('Admin logged in');
-      cy.get('.notification-success').should('contain', 'login successful');
+      cy.get('.notification-success').should(
+        'contain',
+        'Successfully logged in',
+      );
       cy.get('.notification-success').should(
         'have.css',
         'color',

@@ -30,19 +30,18 @@ export const initBlogs = () => {
   };
 };
 
-export const createBlog = (blog, creator) => {
-  return async (dispatch) => {
+export const createBlog = (blog) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const user = state.user;
     try {
       const createdBlog = await blogService.create(blog);
-      const createdBlogWithCreator = {
-        ...createdBlog,
-        user: {
-          id: creator.id,
-          name: creator.name,
-          username: creator.username,
-        },
+      const createdBlogUserinfo = {
+        id: createdBlog.user,
+        name: user.name,
+        username: user.username,
       };
-      dispatch(addBlog(createdBlogWithCreator));
+      dispatch(addBlog({ ...createdBlog, user: createdBlogUserinfo }));
       dispatch(
         showNotification(
           `a new blog ${createdBlog.title} by ${createdBlog.author} added`,

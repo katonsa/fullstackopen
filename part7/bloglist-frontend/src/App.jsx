@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import sortBy from 'lodash.sortby';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
@@ -7,13 +8,13 @@ import BlogForm from './components/BlogForm';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import { showNotification } from './reducers/notificationReducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { initBlogs, createBlog } from './reducers/blogReducer';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
+
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
@@ -21,9 +22,9 @@ const App = () => {
 
   useEffect(() => {
     if (user !== null) {
-      blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(initBlogs());
     }
-  }, [user]);
+  }, [user, dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
@@ -34,16 +35,7 @@ const App = () => {
     }
   }, []);
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({
         username,
@@ -53,8 +45,6 @@ const App = () => {
       setUser(user);
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
       blogService.setToken(user.token);
-      setUsername('');
-      setPassword('');
       dispatch(showNotification('login successful', 'success'));
     } catch (exception) {
       if (exception.response.status !== 200) {
@@ -81,32 +71,7 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     blogFormRef.current.toggleVisibility();
-    try {
-      const createdBlog = await blogService.create(newBlog);
-      setBlogs(
-        blogs.concat({
-          ...createdBlog,
-          user: {
-            id: user.id,
-            name: user.name,
-            username: user.username,
-          },
-        }),
-      );
-      dispatch(
-        showNotification(
-          `a new blog ${newBlog.title} by ${newBlog.author} added`,
-          'success',
-        ),
-      );
-    } catch (exception) {
-      dispatch(
-        showNotification(
-          exception.response.data.error ?? exception.message,
-          'error',
-        ),
-      );
-    }
+    dispatch(createBlog(newBlog, user));
   };
 
   const updateBlogLike = async (blog) => {
@@ -125,7 +90,7 @@ const App = () => {
       },
     };
 
-    setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? withUser : b)));
+    // setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? withUser : b)));
     dispatch(
       showNotification(
         `you liked ${updatedBlog.title} by ${updatedBlog.author}`,
@@ -137,7 +102,6 @@ const App = () => {
   const removeBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.remove(blog.id);
-      setBlogs(blogs.filter((b) => b.id !== blog.id));
       dispatch(showNotification(`${blog.title} removed`, 'success'));
     }
   };
@@ -150,20 +114,14 @@ const App = () => {
     );
   };
 
-  const sortedBlogsByLikes = blogs.sort((a, b) => b.likes - a.likes);
+  const sortedBlogsByLikes = sortBy(blogs, [(b) => -b.likes]);
 
   if (user === null) {
     return (
       <div>
         <h2>log in to application</h2>
         <Notification />
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          handleUsernameChange={handleUsernameChange}
-          password={password}
-          handlePasswordChange={handlePasswordChange}
-        />
+        <LoginForm handleLogin={handleLogin} />
       </div>
     );
   }

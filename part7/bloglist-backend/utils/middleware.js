@@ -9,17 +9,19 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
-  } if (error.name === 'ValidationError') {
+  }
+  if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message });
-  } if (error.name === 'JsonWebTokenError') {
+  }
+  if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({ error: error.message });
-  } if (error.name === 'TokenExpiredError') {
+  }
+  if (error.name === 'TokenExpiredError') {
     return response.status(401).json({
       error: 'token expired',
     });
-  } 
-    console.error(request.url, error.name, error.message, error.stack);
-  
+  }
+  console.error(request.url, error.name, error.message, error.stack);
 
   next(error);
 };
@@ -43,6 +45,10 @@ const userExtractor = async (request, response, next) => {
   }
 
   const user = await User.findById(decodedToken.id);
+  if (!user) {
+    return response.status(401).json({ error: 'user invalid' });
+  }
+
   request.user = user;
 
   next();

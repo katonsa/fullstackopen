@@ -4,6 +4,10 @@ describe('Blog app', function () {
     cy.visit('http://localhost:5173');
   });
 
+  afterAll(function () {
+    cy.request('POST', 'http://localhost:3003/api/testing/reset');
+  });
+
   it('login form is shown', function () {
     cy.visit('http://localhost:5173');
     cy.contains('log in to application');

@@ -4,7 +4,7 @@ describe('Blog app', function () {
     cy.visit('http://localhost:5173');
   });
 
-  afterAll(function () {
+  after(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset');
   });
 

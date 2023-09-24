@@ -9,7 +9,12 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 import { showNotification } from './reducers/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { initBlogs, createBlog } from './reducers/blogReducer';
+import {
+  initBlogs,
+  createBlog,
+  likeBlog,
+  deleteBlog,
+} from './reducers/blogReducer';
 
 const App = () => {
   const blogs = useSelector((state) => state.blogs);
@@ -75,34 +80,12 @@ const App = () => {
   };
 
   const updateBlogLike = async (blog) => {
-    const updatedBlog = await blogService.update(blog.id, {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id,
-    });
-
-    const withUser = {
-      ...updatedBlog,
-      user: {
-        id: blog.user.id,
-        name: blog.user.name,
-        username: blog.user.username,
-      },
-    };
-
-    // setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? withUser : b)));
-    dispatch(
-      showNotification(
-        `you liked ${updatedBlog.title} by ${updatedBlog.author}`,
-        'success',
-      ),
-    );
+    return dispatch(likeBlog(blog));
   };
 
   const removeBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id);
-      dispatch(showNotification(`${blog.title} removed`, 'success'));
+      dispatch(deleteBlog(blog));
     }
   };
 

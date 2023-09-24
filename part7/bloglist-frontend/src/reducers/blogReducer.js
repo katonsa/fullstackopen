@@ -9,6 +9,14 @@ const blogSlice = createSlice({
     addBlog: (state, action) => {
       return [...state, action.payload];
     },
+    removeBlog: (state, action) => {
+      return state.filter((blog) => blog.id !== action.payload);
+    },
+    updateBlog: (state, action) => {
+      return state.map((blog) =>
+        blog.id === action.payload.id ? action.payload : blog,
+      );
+    },
     setBlogs: (state, action) => {
       return action.payload;
     },
@@ -50,5 +58,44 @@ export const createBlog = (blog, creator) => {
   };
 };
 
-export const { setBlogs, addBlog } = blogSlice.actions;
+export const likeBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.update({
+        ...blog,
+        likes: blog.likes + 1,
+        user: blog.user.id,
+      });
+      dispatch(updateBlog({ ...updatedBlog, user: blog.user }));
+      dispatch(
+        showNotification(
+          `you liked ${updatedBlog.title} by ${updatedBlog.author}`,
+          'success',
+        ),
+      );
+    } catch (error) {
+      const message = error.response.data.error
+        ? error.response.data.error
+        : 'something went wrong';
+      dispatch(showNotification(message, 'error'));
+    }
+  };
+};
+
+export const deleteBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      await blogService.remove(blog.id);
+      dispatch(removeBlog(blog.id));
+      dispatch(showNotification(`${blog.title} removed`, 'success'));
+    } catch (error) {
+      const message = error.response.data.error
+        ? error.response.data.error
+        : 'something went wrong';
+      dispatch(showNotification(message, 'error'));
+    }
+  };
+};
+
+export const { setBlogs, addBlog, updateBlog, removeBlog } = blogSlice.actions;
 export default blogSlice.reducer;

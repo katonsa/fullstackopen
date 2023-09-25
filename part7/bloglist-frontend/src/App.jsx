@@ -9,6 +9,7 @@ import { initUsers } from './reducers/usersReducer';
 import Blogs from './pages/Blogs';
 import Users from './pages/Users';
 import UserView from './pages/UserView';
+import BlogView from './pages/BlogView';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -54,6 +55,7 @@ const App = () => {
       <div>
         <Routes>
           <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
+          <Route path="/blogs/:id" element={<BlogView />} />
           <Route path="/users/:id" element={<UserView />} />
           <Route path="/users" element={<Users />} />
         </Routes>

@@ -33,7 +33,7 @@ export const initBlogs = () => {
 export const createBlog = (blog) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const user = state.user;
+    const user = state.login;
     try {
       const createdBlog = await blogService.create(blog);
       const createdBlogUserinfo = {
@@ -49,10 +49,14 @@ export const createBlog = (blog) => {
         ),
       );
     } catch (error) {
-      const message = error.response.data.error
-        ? error.response.data.error
-        : 'something went wrong';
-      dispatch(showNotification(message, 'error'));
+      if (error.response) {
+        const message = error.response.data.error
+          ? error.response.data.error
+          : 'something went wrong';
+        dispatch(showNotification(message, 'error'));
+      } else {
+        console.log('something went wrong', error.name, error.stack);
+      }
     }
   };
 };

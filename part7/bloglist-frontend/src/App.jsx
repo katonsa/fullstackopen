@@ -1,30 +1,25 @@
 import { useEffect } from 'react';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
-import blogService from './services/blogs';
 import { useDispatch, useSelector } from 'react-redux';
 import { initBlogs } from './reducers/blogReducer';
-import { login, logout, setUser } from './reducers/userReducer';
+import { initLoggedInUser, login, logout } from './reducers/loginReducer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Blogs from './pages/Blogs';
 import Users from './pages/Users';
+import UserView from './pages/UserView';
 
 const App = () => {
-  const user = useSelector((state) => state.user);
+  const loggedInUser = useSelector((state) => state.login);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user !== null) {
+    if (loggedInUser !== null) {
       dispatch(initBlogs());
     } else {
-      const loggedUserJSON = window.localStorage.getItem('loggedUser');
-      if (loggedUserJSON) {
-        const user = JSON.parse(loggedUserJSON);
-        blogService.setToken(user.token);
-        dispatch(setUser(user));
-      }
+      dispatch(initLoggedInUser());
     }
-  }, [user, dispatch]);
+  }, [loggedInUser, dispatch]);
 
   const handleLogin = async ({ username, password }) => {
     dispatch(login({ username, password }));
@@ -34,7 +29,7 @@ const App = () => {
     dispatch(logout());
   };
 
-  if (user === null) {
+  if (loggedInUser === null) {
     return (
       <div>
         <h2>log in to application</h2>
@@ -51,12 +46,14 @@ const App = () => {
         <Notification />
         <div>
           <p>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
+            {loggedInUser.name} logged in{' '}
+            <button onClick={handleLogout}>logout</button>
           </p>
         </div>
         <div>
           <Routes>
-            <Route path="/" element={<Blogs />} />
+            <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
+            <Route path="/users/:id" element={<UserView />} />
             <Route path="/users" element={<Users />} />
           </Routes>
         </div>

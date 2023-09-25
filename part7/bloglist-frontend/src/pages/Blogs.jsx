@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import sortBy from 'lodash.sortby';
@@ -6,9 +7,8 @@ import Togglable from '../components/Togglable';
 import BlogForm from '../components/BlogForm';
 import Blog from '../components/Blog';
 
-const Blogs = () => {
+const Blogs = ({ loggedInUser }) => {
   const blogs = useSelector((state) => state.blogs);
-  const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
   const blogFormRef = useRef();
@@ -48,12 +48,16 @@ const Blogs = () => {
             blog={blog}
             likeBlog={updateBlogLike}
             removeBlog={removeBlog}
-            user={user}
+            loggedInUser={loggedInUser}
           />
         ))}
       </div>
     </div>
   );
+};
+
+Blogs.propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
 };
 
 export default Blogs;

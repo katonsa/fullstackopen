@@ -3,8 +3,8 @@ import blogService from '../services/blogs';
 import loginService from '../services/login';
 import { showNotification } from './notificationReducer';
 
-const userSlice = createSlice({
-  name: 'user',
+const loginSlice = createSlice({
+  name: 'login',
   initialState: null,
   reducers: {
     setUser: (_state, action) => {
@@ -15,6 +15,17 @@ const userSlice = createSlice({
     },
   },
 });
+
+export const initLoggedInUser = () => {
+  return async (dispatch) => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      blogService.setToken(user.token);
+      dispatch(setUser(user));
+    }
+  };
+};
 
 export const login = (credentials) => {
   return async (dispatch) => {
@@ -42,6 +53,6 @@ export const logout = () => {
   };
 };
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { setUser, removeUser } = loginSlice.actions;
 
-export default userSlice.reducer;
+export default loginSlice.reducer;

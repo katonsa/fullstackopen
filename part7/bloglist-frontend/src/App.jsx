@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
-import { useDispatch, useSelector } from 'react-redux';
 import { initBlogs } from './reducers/blogReducer';
 import { initLoggedInUser, login, logout } from './reducers/loginReducer';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { initUsers } from './reducers/usersReducer';
 import Blogs from './pages/Blogs';
 import Users from './pages/Users';
 import UserView from './pages/UserView';
@@ -16,6 +17,7 @@ const App = () => {
   useEffect(() => {
     if (loggedInUser !== null) {
       dispatch(initBlogs());
+      dispatch(initUsers());
     } else {
       dispatch(initLoggedInUser());
     }
@@ -40,25 +42,23 @@ const App = () => {
   }
 
   return (
-    <BrowserRouter>
+    <div>
+      <h2>blogs</h2>
+      <Notification />
       <div>
-        <h2>blogs</h2>
-        <Notification />
-        <div>
-          <p>
-            {loggedInUser.name} logged in{' '}
-            <button onClick={handleLogout}>logout</button>
-          </p>
-        </div>
-        <div>
-          <Routes>
-            <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
-            <Route path="/users/:id" element={<UserView />} />
-            <Route path="/users" element={<Users />} />
-          </Routes>
-        </div>
+        <p>
+          {loggedInUser.name} logged in{' '}
+          <button onClick={handleLogout}>logout</button>
+        </p>
       </div>
-    </BrowserRouter>
+      <div>
+        <Routes>
+          <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
+          <Route path="/users/:id" element={<UserView />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </div>
+    </div>
   );
 };
 

@@ -1,25 +1,16 @@
-import { useEffect, useRef } from 'react';
-import sortBy from 'lodash.sortby';
-import Blog from './components/Blog';
+import { useEffect } from 'react';
 import Notification from './components/Notification';
-import Togglable from './components/Togglable';
 import LoginForm from './components/LoginForm';
-import BlogForm from './components/BlogForm';
 import blogService from './services/blogs';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  initBlogs,
-  createBlog,
-  likeBlog,
-  deleteBlog,
-} from './reducers/blogReducer';
+import { initBlogs } from './reducers/blogReducer';
 import { login, logout, setUser } from './reducers/userReducer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Blogs from './pages/Blogs';
 
 const App = () => {
-  const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const blogFormRef = useRef();
 
   useEffect(() => {
     if (user !== null) {
@@ -42,31 +33,6 @@ const App = () => {
     dispatch(logout());
   };
 
-  const addBlog = async (newBlog) => {
-    blogFormRef.current.toggleVisibility();
-    dispatch(createBlog(newBlog));
-  };
-
-  const updateBlogLike = async (blog) => {
-    return dispatch(likeBlog(blog));
-  };
-
-  const removeBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      dispatch(deleteBlog(blog));
-    }
-  };
-
-  const createBlogForm = () => {
-    return (
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
-      </Togglable>
-    );
-  };
-
-  const sortedBlogsByLikes = sortBy(blogs, [(b) => -b.likes]);
-
   if (user === null) {
     return (
       <div>
@@ -78,27 +44,23 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h2>blogs</h2>
-      <Notification />
+    <BrowserRouter>
       <div>
-        <p>
-          {user.name} logged in <button onClick={handleLogout}>logout</button>
-        </p>
+        <h2>blogs</h2>
+        <Notification />
+        <div>
+          <p>
+            {user.name} logged in <button onClick={handleLogout}>logout</button>
+          </p>
+        </div>
+        <div>
+          <Routes>
+            <Route path="/" element={<Blogs />} />
+            <Route path="/users" element={<div>Users</div>} />
+          </Routes>
+        </div>
       </div>
-      {createBlogForm()}
-      <div className="blog-list">
-        {sortedBlogsByLikes.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            likeBlog={updateBlogLike}
-            removeBlog={removeBlog}
-            user={user}
-          />
-        ))}
-      </div>
-    </div>
+    </BrowserRouter>
   );
 };
 

@@ -7,6 +7,7 @@ import { initBlogs } from './reducers/blogReducer';
 import { login, logout, setUser } from './reducers/userReducer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Blogs from './pages/Blogs';
+import Users from './pages/Users';
 
 const App = () => {
   const user = useSelector((state) => state.user);
@@ -56,7 +57,7 @@ const App = () => {
         <div>
           <Routes>
             <Route path="/" element={<Blogs />} />
-            <Route path="/users" element={<div>Users</div>} />
+            <Route path="/users" element={<Users />} />
           </Routes>
         </div>
       </div>

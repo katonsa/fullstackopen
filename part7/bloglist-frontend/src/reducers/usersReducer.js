@@ -8,6 +8,14 @@ const userSlice = createSlice({
     setUsers: (state, action) => {
       return action.payload;
     },
+    appendNewBlogToUser: (state, action) => {
+      const user = state.find((user) => user.id === action.payload.user);
+      user.blogs = [...user.blogs, action.payload.id];
+    },
+    removeBlogFromUser: (state, action) => {
+      const user = state.find((user) => user.id === action.payload.user.id);
+      user.blogs = user.blogs.filter((blog) => blog.id !== action.payload.id);
+    },
   },
 });
 
@@ -18,6 +26,7 @@ export const initUsers = () => {
   };
 };
 
-export const { setUsers } = userSlice.actions;
+export const { setUsers, appendNewBlogToUser, removeBlogFromUser } =
+  userSlice.actions;
 
 export default userSlice.reducer;

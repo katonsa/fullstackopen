@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import blogService from '../services/blogs';
 import { showNotification } from './notificationReducer';
+import { appendNewBlogToUser, removeBlogFromUser } from './usersReducer';
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -42,6 +43,7 @@ export const createBlog = (blog) => {
         username: user.username,
       };
       dispatch(addBlog({ ...createdBlog, user: createdBlogUserinfo }));
+      dispatch(appendNewBlogToUser(createdBlog));
       dispatch(
         showNotification(
           `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
@@ -90,12 +92,17 @@ export const deleteBlog = (blog) => {
     try {
       await blogService.remove(blog.id);
       dispatch(removeBlog(blog.id));
+      dispatch(removeBlogFromUser(blog));
       dispatch(showNotification(`${blog.title} removed`, 'success'));
     } catch (error) {
-      const message = error.response.data.error
-        ? error.response.data.error
-        : 'something went wrong';
-      dispatch(showNotification(message, 'error'));
+      if (error.response) {
+        const message = error.response.data.error
+          ? error.response.data.error
+          : 'something went wrong';
+        dispatch(showNotification(message, 'error'));
+      } else {
+        console.log('something went wrong', error.name, error.stack);
+      }
     }
   };
 };

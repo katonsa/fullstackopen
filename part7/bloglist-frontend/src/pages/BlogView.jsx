@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { likeBlog, deleteBlog } from '../reducers/blogReducer';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import blogService from '../services/blogs';
 
 const BlogView = () => {
   const params = useParams();
@@ -10,6 +12,17 @@ const BlogView = () => {
   const dispatch = useDispatch();
   const blog = blogs.find((blog) => blog.id === params.id);
   const loggedInUser = useSelector((state) => state.login);
+
+  const [content, setContent] = useState('');
+  const [comments, setComments] = useState(null);
+
+  useEffect(() => {
+    if (blog && comments === null) {
+      blogService.getBlogComments(blog.id).then((comments) => {
+        setComments(comments);
+      });
+    }
+  }, [blog, comments]);
 
   const handleLike = () => {
     dispatch(likeBlog(blog));
@@ -20,11 +33,22 @@ const BlogView = () => {
     navigate('/');
   };
 
+  const addComment = (event) => {
+    event.preventDefault();
+    blogService.createBlogComment(blog.id, { content });
+    setComments((comments) => [
+      ...comments,
+      {
+        id: comments.length + 1,
+        content: content,
+      },
+    ]);
+    setContent('');
+  };
+
   if (!blog) {
     return null;
   }
-
-  console.log('BlogView render');
 
   return (
     <div>
@@ -43,6 +67,32 @@ const BlogView = () => {
           {blog.user.username === loggedInUser.username && (
             <button onClick={handleRemove}>remove</button>
           )}
+        </div>
+      </div>
+      <div>
+        <h4>comments</h4>
+        <div>
+          <form onSubmit={addComment}>
+            <div>
+              <input
+                type="text"
+                name="comment"
+                id="comment"
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+              />
+            </div>
+            <button>add comment</button>
+          </form>
+          <div>
+            {comments && (
+              <ul>
+                {comments.map((comment) => (
+                  <li key={comment.id}>{comment.content}</li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     </div>

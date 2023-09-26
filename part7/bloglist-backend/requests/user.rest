@@ -1,9 +1,11 @@
+@baseUrl = http://localhost:3003
+
 ### Get all users
-GET http://localhost:3003/api/users HTTP/1.1
+GET {{baseUrl}}/api/users HTTP/1.1
 
 ### Create user
 # @prompt username Name and username of the user
-POST http://localhost:3003/api/users HTTP/1.1
+POST {{baseUrl}}/api/users HTTP/1.1
 Content-Type: application/json
 
 {
@@ -14,7 +16,7 @@ Content-Type: application/json
 
 ### User login
 # @prompt username Username of the user
-POST http://localhost:3003/api/login HTTP/1.1
+POST {{baseUrl}}/api/login HTTP/1.1
 Content-Type: application/json
 
 {

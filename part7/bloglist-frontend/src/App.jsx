@@ -4,12 +4,13 @@ import { Routes, Route } from 'react-router-dom';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
 import { initBlogs } from './reducers/blogReducer';
-import { initLoggedInUser, login, logout } from './reducers/loginReducer';
+import { initLoggedInUser, login } from './reducers/loginReducer';
 import { initUsers } from './reducers/usersReducer';
 import Blogs from './pages/Blogs';
 import Users from './pages/Users';
 import UserView from './pages/UserView';
 import BlogView from './pages/BlogView';
+import Navigation from './components/Navigation';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -28,10 +29,6 @@ const App = () => {
     dispatch(login({ username, password }));
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   if (loggedInUser === null) {
     return (
       <div>
@@ -43,15 +40,12 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h2>blogs</h2>
+    <main>
+      <header>
+        <Navigation currentUser={loggedInUser} />
+        <h1>blog app</h1>
+      </header>
       <Notification />
-      <div>
-        <p>
-          {loggedInUser.name} logged in{' '}
-          <button onClick={handleLogout}>logout</button>
-        </p>
-      </div>
       <div>
         <Routes>
           <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
@@ -60,7 +54,7 @@ const App = () => {
           <Route path="/users" element={<Users />} />
         </Routes>
       </div>
-    </div>
+    </main>
   );
 };
 

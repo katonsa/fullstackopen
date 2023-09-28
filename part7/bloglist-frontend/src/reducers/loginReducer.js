@@ -44,12 +44,14 @@ export const login = (credentials) => {
   };
 };
 
-export const logout = () => {
+export const logout = (
+  notif = { message: 'Successfully logged out', type: 'success' },
+) => {
   return async (dispatch) => {
     dispatch(removeUser());
     blogService.setToken(null);
     window.localStorage.clear();
-    dispatch(showNotification('Successfully logged out', 'success'));
+    dispatch(showNotification(notif.message, notif.type));
   };
 };
 

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Button, Form } from 'react-bootstrap';
 import useField from '../hooks';
 
 const LoginForm = (props) => {
@@ -18,33 +19,35 @@ const LoginForm = (props) => {
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="username">username</label>
-          <input
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label htmlFor="username">Username</Form.Label>
+          <Form.Control
             type={username.type}
             name="username"
             id="username"
+            placeholder="Enter your username"
             autoComplete="username"
             value={username.value}
             onChange={username.onChange}
           />
-        </div>
-        <div>
-          <label htmlFor="password">password</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Control
             type={password.type}
             name="password"
             id="password"
+            placeholder="Enter your password"
             value={password.value}
             onChange={password.onChange}
           />
-        </div>
+        </Form.Group>
 
-        <button id="login-button" type="submit">
-          login
-        </button>
-      </form>
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
+      </Form>
     </div>
   );
 };

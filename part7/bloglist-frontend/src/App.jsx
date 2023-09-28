@@ -9,8 +9,8 @@ import { initUsers } from './reducers/usersReducer';
 import Blogs from './components/Blogs';
 import Users from './components/Users';
 import UserView from './components/User';
-import BlogView from './pages/BlogView';
-import NavigationBar from './components/NavigationBar';
+import BlogView from './components/Blog';
+import Navigation from './components/NavigationBar';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -40,10 +40,10 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <header>
-        <NavigationBar currentUser={loggedInUser} />
-        <h1>blog app</h1>
+        <Navigation currentUser={loggedInUser} />
+        {/* <h1>blog app</h1> */}
       </header>
       <Notification />
       <Routes>

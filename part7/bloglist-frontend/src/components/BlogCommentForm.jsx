@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import useField from '../hooks';
+import { Button, Form } from 'react-bootstrap';
 
 const CommentForm = (props) => {
   const content = useField('text');
@@ -11,18 +12,21 @@ const CommentForm = (props) => {
   };
 
   return (
-    <form onSubmit={addComment}>
-      <div>
-        <input
+    <Form onSubmit={addComment}>
+      <Form.Group>
+        <Form.Control
           type={content.type}
           name="comment"
           id="comment"
+          placeholder="Leave a comment..."
           value={content.value}
           onChange={content.onChange}
         />
-      </div>
-      <button>add comment</button>
-    </form>
+      </Form.Group>
+      <Button variant="primary" type="submit">
+        Send
+      </Button>
+    </Form>
   );
 };
 

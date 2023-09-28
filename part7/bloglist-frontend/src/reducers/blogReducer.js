@@ -3,6 +3,7 @@ import blogService from '../services/blogs';
 import { showNotification } from './notificationReducer';
 import { appendNewBlogToUser, removeBlogFromUser } from './usersReducer';
 import _ from 'lodash';
+import { logout } from './loginReducer';
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -27,8 +28,23 @@ const blogSlice = createSlice({
 
 export const initBlogs = () => {
   return async (dispatch) => {
-    const blogs = await blogService.getAll();
-    dispatch(setBlogs(blogs));
+    try {
+      const blogs = await blogService.getAll();
+      dispatch(setBlogs(blogs));
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          dispatch(
+            logout({
+              message: 'Unauthorized, please login again.',
+              type: 'error',
+            }),
+          );
+        }
+      } else {
+        dispatch(showNotification('Failed to fetch blogs', 'error'));
+      }
+    }
   };
 };
 

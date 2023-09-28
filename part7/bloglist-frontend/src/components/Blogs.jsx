@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import sortBy from 'lodash.sortby';
-import { createBlog, likeBlog, deleteBlog } from '../reducers/blogReducer';
+import _ from 'lodash';
+import { createBlog } from '../reducers/blogReducer';
 import Togglable from './Togglable';
 import BlogForm from './BlogForm';
-import Blog from './Blog';
+import { Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-const Blogs = ({ loggedInUser }) => {
+const Blogs = () => {
   const blogs = useSelector((state) => state.blogs);
   const dispatch = useDispatch();
   const blogFormRef = useRef();
@@ -17,39 +18,42 @@ const Blogs = ({ loggedInUser }) => {
     dispatch(createBlog(newBlog));
   };
 
-  const updateBlogLike = async (blog) => {
-    return dispatch(likeBlog(blog));
-  };
-
-  const removeBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      dispatch(deleteBlog(blog));
-    }
-  };
-
   const createBlogForm = () => {
     return (
-      <Togglable buttonLabel="create new" ref={blogFormRef}>
+      <Togglable buttonLabel="Create new" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
     );
   };
 
-  const sortedBlogsByLikes = sortBy(blogs, [(b) => -b.likes]);
+  const sortedBlogsByLikes = _.sortBy(blogs, [(b) => -b.likes]);
 
   return (
     <div>
       {createBlogForm()}
       <div className="blog-list">
-        {sortedBlogsByLikes.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            likeBlog={updateBlogLike}
-            removeBlog={removeBlog}
-            loggedInUser={loggedInUser}
-          />
-        ))}
+        <Table striped>
+          <thead>
+            <th></th>
+            <th>Author</th>
+            <th>Likes</th>
+            <th>Creator</th>
+          </thead>
+          <tbody>
+            {sortedBlogsByLikes.map((blog) => (
+              <tr key={blog.id}>
+                <td>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                </td>
+                <td>{blog.author}</td>
+                <td>{blog.likes} likes</td>
+                <td>
+                  <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </div>
     </div>
   );

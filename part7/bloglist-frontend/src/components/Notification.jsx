@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Alert } from 'react-bootstrap';
 
 const Notification = () => {
   const notification = useSelector((state) => state.notification);
@@ -9,16 +10,7 @@ const Notification = () => {
   }
 
   const { message, type } = notification;
-
-  return (
-    <div
-      className={`notification ${
-        type === 'error' ? 'notification-error' : 'notification-success'
-      }`}
-    >
-      {message}
-    </div>
-  );
+  return <Alert variant={type === 'error' ? 'danger' : type}>{message}</Alert>;
 };
 
 Notification.propTypes = {

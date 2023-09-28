@@ -3,13 +3,12 @@ import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import sortBy from 'lodash.sortby';
 import { createBlog, likeBlog, deleteBlog } from '../reducers/blogReducer';
-import Togglable from '../components/Togglable';
-import BlogForm from '../components/BlogForm';
-import Blog from '../components/Blog';
+import Togglable from './Togglable';
+import BlogForm from './BlogForm';
+import Blog from './Blog';
 
 const Blogs = ({ loggedInUser }) => {
   const blogs = useSelector((state) => state.blogs);
-
   const dispatch = useDispatch();
   const blogFormRef = useRef();
 

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import blogService from '../services/blogs';
 import { showNotification } from './notificationReducer';
 import { appendNewBlogToUser, removeBlogFromUser } from './usersReducer';
+import _ from 'lodash';
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -15,7 +16,7 @@ const blogSlice = createSlice({
     },
     updateBlog: (state, action) => {
       return state.map((blog) =>
-        blog.id === action.payload.id ? action.payload : blog,
+        blog.id === action.payload.id ? { ...blog, ...action.payload } : blog,
       );
     },
     setBlogs: (state, action) => {
@@ -63,15 +64,20 @@ export const createBlog = (blog) => {
   };
 };
 
+const withoutUserAndComments = (blog) => {
+  return _.omit(blog, ['user', 'comments']);
+};
+
 export const likeBlog = (blog) => {
   return async (dispatch) => {
     try {
       const updatedBlog = await blogService.update({
-        ...blog,
+        ...withoutUserAndComments(blog),
         likes: blog.likes + 1,
         user: blog.user.id,
       });
-      dispatch(updateBlog({ ...updatedBlog, user: blog.user }));
+
+      dispatch(updateBlog(withoutUserAndComments(updatedBlog)));
       dispatch(
         showNotification(
           `you liked ${updatedBlog.title} by ${updatedBlog.author}`,
@@ -107,5 +113,25 @@ export const deleteBlog = (blog) => {
   };
 };
 
-export const { setBlogs, addBlog, updateBlog, removeBlog } = blogSlice.actions;
+export const addBlogComment = (blog, comment) => {
+  return async (dispatch) => {
+    try {
+      const createdComment = await blogService.createBlogComment(blog.id, {
+        content: comment,
+      });
+      dispatch(
+        updateBlog({
+          ...blog,
+          comments: blog.comments.concat(_.omit(createdComment, ['blog'])),
+        }),
+      );
+      dispatch(showNotification('Successfully added a comment', 'success'));
+    } catch (error) {
+      dispatch(showNotification('Failed to add comments', 'error'));
+    }
+  };
+};
+
+export const { setBlogs, addBlog, updateBlog, removeBlog, addCommentToBlog } =
+  blogSlice.actions;
 export default blogSlice.reducer;

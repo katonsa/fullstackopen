@@ -1,23 +1,19 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import useField from '../hooks';
 
 const LoginForm = (props) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+  const username = useField('text');
+  const password = useField('password');
 
   const handleLogin = (event) => {
     event.preventDefault();
-    props.handleLogin({ username, password });
-    setUsername('');
-    setPassword('');
+    props.handleLogin({ username: username.value, password: password.value });
+    clearFields();
+  };
+
+  const clearFields = () => {
+    username.reset();
+    password.reset();
   };
 
   return (
@@ -26,22 +22,22 @@ const LoginForm = (props) => {
         <div>
           <label htmlFor="username">username</label>
           <input
-            type="text"
+            type={username.type}
             name="username"
             id="username"
-            value={username}
-            onChange={handleUsernameChange}
             autoComplete="username"
+            value={username.value}
+            onChange={username.onChange}
           />
         </div>
         <div>
           <label htmlFor="password">password</label>
           <input
-            type="password"
+            type={password.type}
             name="password"
             id="password"
-            value={password}
-            onChange={handlePasswordChange}
+            value={password.value}
+            onChange={password.onChange}
           />
         </div>
 

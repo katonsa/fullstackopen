@@ -6,11 +6,11 @@ import LoginForm from './components/LoginForm';
 import { initBlogs } from './reducers/blogReducer';
 import { initLoggedInUser, login } from './reducers/loginReducer';
 import { initUsers } from './reducers/usersReducer';
-import Blogs from './pages/Blogs';
-import Users from './pages/Users';
-import UserView from './pages/UserView';
+import Blogs from './components/Blogs';
+import Users from './components/Users';
+import UserView from './components/User';
 import BlogView from './pages/BlogView';
-import Navigation from './components/Navigation';
+import NavigationBar from './components/NavigationBar';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -40,21 +40,23 @@ const App = () => {
   }
 
   return (
-    <main>
+    <div>
       <header>
-        <Navigation currentUser={loggedInUser} />
+        <NavigationBar currentUser={loggedInUser} />
         <h1>blog app</h1>
       </header>
       <Notification />
-      <div>
-        <Routes>
-          <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
-          <Route path="/blogs/:id" element={<BlogView />} />
-          <Route path="/users/:id" element={<UserView />} />
-          <Route path="/users" element={<Users />} />
-        </Routes>
-      </div>
-    </main>
+      <Routes>
+        <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
+        <Route path="/blogs/:id" element={<BlogView />} />
+        <Route
+          path="/login"
+          element={<LoginForm handleLogin={handleLogin} />}
+        />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserView />} />
+      </Routes>
+    </div>
   );
 };
 

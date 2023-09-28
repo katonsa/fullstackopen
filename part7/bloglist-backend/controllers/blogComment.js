@@ -4,11 +4,11 @@ const BlogComment = require('../models/blogComment');
 
 const blogCommentRouter = router({ mergeParams: true });
 
-blogCommentRouter.get('/', async (request, response) => {
-  const { blog } = request.params;
-  const comments = await BlogComment.find({ blog });
-  response.json(comments);
-});
+// blogCommentRouter.get('/', async (request, response) => {
+//   const { blog } = request.params;
+//   const comments = await BlogComment.find({ blog });
+//   response.json(comments);
+// });
 
 blogCommentRouter.post('/', async (request, response) => {
   const { content } = request.body;

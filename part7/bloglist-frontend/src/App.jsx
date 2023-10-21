@@ -11,6 +11,7 @@ import Users from './components/Users';
 import UserView from './components/User';
 import BlogView from './components/Blog';
 import Navigation from './components/NavigationBar';
+import { Container } from 'react-bootstrap';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -32,30 +33,36 @@ const App = () => {
   if (loggedInUser === null) {
     return (
       <div>
-        <h2>log in to application</h2>
-        <Notification />
-        <LoginForm handleLogin={handleLogin} />
+        <Navigation />
+        <Container className="mt-4">
+          <h2>Log in to blog app</h2>
+          <Notification />
+          <LoginForm handleLogin={handleLogin} />
+        </Container>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <header>
-        <Navigation currentUser={loggedInUser} />
-        {/* <h1>blog app</h1> */}
-      </header>
-      <Notification />
-      <Routes>
-        <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
-        <Route path="/blogs/:id" element={<BlogView />} />
-        <Route
-          path="/login"
-          element={<LoginForm handleLogin={handleLogin} />}
-        />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UserView />} />
-      </Routes>
+    <div>
+      <Navigation currentUser={loggedInUser} />
+      <Container className="mt-4">
+        <Notification />
+        <Routes>
+          <Route path="/" element={<Blogs loggedInUser={loggedInUser} />} />
+          <Route path="/blogs/:id" element={<BlogView />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<UserView />} />
+          <Route
+            path="*"
+            element={
+              <div>
+                <p>The page you are looking for is not found</p>
+              </div>
+            }
+          />
+        </Routes>
+      </Container>
     </div>
   );
 };

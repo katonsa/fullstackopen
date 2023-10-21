@@ -12,8 +12,8 @@ const CommentForm = (props) => {
   };
 
   return (
-    <Form onSubmit={addComment}>
-      <Form.Group>
+    <Form className="mb-2" onSubmit={addComment}>
+      <Form.Group className="mb-2">
         <Form.Control
           type={content.type}
           name="comment"
@@ -21,10 +21,16 @@ const CommentForm = (props) => {
           placeholder="Leave a comment..."
           value={content.value}
           onChange={content.onChange}
+          as="textarea"
         />
       </Form.Group>
-      <Button variant="primary" type="submit">
-        Send
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={content.value.trim() === ''}
+        aria-disabled={'' === content.value.trim()}
+      >
+        Add comment
       </Button>
     </Form>
   );

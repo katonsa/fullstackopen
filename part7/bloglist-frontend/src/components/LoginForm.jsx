@@ -20,7 +20,7 @@ const LoginForm = (props) => {
   return (
     <div>
       <Form onSubmit={handleLogin}>
-        <Form.Group>
+        <Form.Group className="mb-2">
           <Form.Label htmlFor="username">Username</Form.Label>
           <Form.Control
             type={username.type}
@@ -32,7 +32,7 @@ const LoginForm = (props) => {
             onChange={username.onChange}
           />
         </Form.Group>
-        <Form.Group>
+        <Form.Group className="mb-2">
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type={password.type}
@@ -43,7 +43,6 @@ const LoginForm = (props) => {
             onChange={password.onChange}
           />
         </Form.Group>
-
         <Button variant="primary" type="submit">
           Login
         </Button>

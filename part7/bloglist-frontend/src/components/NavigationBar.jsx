@@ -14,31 +14,37 @@ const Navigation = ({ currentUser }) => {
   };
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" variant="dark" bg="dark">
       <Container>
-        <Navbar.Brand>Blog App</Navbar.Brand>
+        <Navbar.Brand>
+          <Nav.Link to="/" as={Link}>
+            Blog App
+          </Nav.Link>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link to="/" as={Link}>
-              blogs
+              Blogs
             </Nav.Link>
             <Nav.Link to="/users" as={Link}>
-              users
-            </Nav.Link>
-            <Nav.Link href="#" as="span">
-              {currentUser ? (
-                <>
-                  <em>{currentUser.name} logged in</em>
-                  <Button variant="danger" onClick={logoutHandler}>
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Link to="/login">login</Link>
-              )}
+              Users
             </Nav.Link>
           </Nav>
+          {currentUser && (
+            <>
+              <Navbar.Text className="me-2">
+                Signed in as: {currentUser.name}
+              </Navbar.Text>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={logoutHandler}
+              >
+                Logout
+              </Button>
+            </>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -46,7 +52,7 @@ const Navigation = ({ currentUser }) => {
 };
 
 Navigation.propTypes = {
-  currentUser: PropTypes.object.isRequired,
+  currentUser: PropTypes.object,
 };
 
 export default Navigation;

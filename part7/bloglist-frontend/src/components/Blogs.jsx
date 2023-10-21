@@ -13,7 +13,7 @@ const Blogs = () => {
   const dispatch = useDispatch();
   const blogFormRef = useRef();
 
-  const addBlog = async (newBlog) => {
+  const addBlog = (newBlog) => {
     blogFormRef.current.toggleVisibility();
     dispatch(createBlog(newBlog));
   };
@@ -34,10 +34,12 @@ const Blogs = () => {
       <div className="blog-list">
         <Table striped>
           <thead>
-            <th></th>
-            <th>Author</th>
-            <th>Likes</th>
-            <th>Creator</th>
+            <tr>
+              <th></th>
+              <th>Author</th>
+              <th>Likes</th>
+              <th>Creator</th>
+            </tr>
           </thead>
           <tbody>
             {sortedBlogsByLikes.map((blog) => (

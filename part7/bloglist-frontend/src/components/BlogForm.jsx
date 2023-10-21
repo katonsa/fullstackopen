@@ -31,8 +31,8 @@ const BlogForm = ({ createBlog }) => {
     <div>
       <h2>create new</h2>
       <div>
-        <Form onSubmit={addBlog}>
-          <Form.Group>
+        <Form className="mb-2" onSubmit={addBlog}>
+          <Form.Group className="mb-2">
             <Form.Label htmlFor="title">Title</Form.Label>
             <Form.Control
               type="text"
@@ -42,7 +42,7 @@ const BlogForm = ({ createBlog }) => {
               onChange={handleFormInputChange}
             />
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="mb-2">
             <Form.Label htmlFor="author">Author</Form.Label>
             <Form.Control
               type="text"
@@ -52,7 +52,7 @@ const BlogForm = ({ createBlog }) => {
               onChange={handleFormInputChange}
             />
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="mb-2">
             <Form.Label htmlFor="url">URL</Form.Label>
             <Form.Control
               type="text"

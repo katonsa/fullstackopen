@@ -1,7 +1,7 @@
 import { PropTypes } from 'prop-types';
 
 const BlogComments = ({ comments }) => {
-  if (comments === null) {
+  if (comments.length < 1) {
     return <div>There is no comments to display</div>;
   }
 
